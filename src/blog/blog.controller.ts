@@ -1,41 +1,56 @@
-import { Body, Controller, Delete, Get, Logger, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Logger, Param, Post, Put } from '@nestjs/common';
+import { BlogService } from './blog.service';
+import { ArticleDto } from './dtos/article.dto';
 
 @Controller('blog')
 export class BlogController {
+    constructor(private readonly blogService:BlogService){
+
+    }
     @Get()
     getAll() {
 
         Logger.log("get ALL articless", "BlogController");
 
-        return "Get all article";
+        return this.blogService.getAllArticles();
     }
 
     @Get(':articleId')
-    getOne(@Param('articleId') articleId) {
+   async getOne(@Param('articleId') articleId) {
 
         Logger.log("get one article", "BlogController");
 
-        return "Get one article";
+        const article= await this.blogService.getOneArticle(articleId);
+        if(article) return article
+        throw new HttpException('article is null',HttpStatus.NOT_FOUND)
     }
 
     @Post()
-    create(@Body() articleDto) {
+   async create(@Body() articleDto:ArticleDto) {
         Logger.log("create an article", "BlogController");
+        const article=await this.blogService.createArticle(articleDto)
+        if(article)
+            return article
 
-        return "create article";
+        throw new HttpException('Not Exception',HttpStatus.NOT_MODIFIED)
     }
 
     @Put(':articleId')
-    update(@Param(":articleId") articleId, @Body() articleDto) {
-        Logger.log("update an article", "BlogController");
+    async update(@Param(":articleId") articleId, @Body() articleDto:ArticleDto) {
+        Logger.log("update an article", "BlogController--->"+articleDto.title);
+        
+       const article=await this.blogService.updateArticle(articleId,articleDto);
+        if(article) return article;
+        throw new HttpException('Not Modified',HttpStatus.NOT_MODIFIED)
 
-        return "update article";
     }
 
     @Delete(":articleId")
-    delete(@Param("articleId") articleId) {
+    async delete(@Param("articleId") articleId) {
         Logger.log("delete an article", "BlogController");
 
-        return "delete article";
+        const article=await this.blogService.removeArticle(articleId);
+        if(article) return article;
+        throw new HttpException('Not found',HttpStatus.NOT_FOUND)
     }
 }
