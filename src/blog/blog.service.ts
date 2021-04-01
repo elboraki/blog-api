@@ -44,8 +44,10 @@ export class BlogService {
     }
 
     async addComment(articleId,commentDto){
-        const article = await this.articlesRepository.findOne(articleId)
-
-        this.commentsRepository.save(commentDto)
+        const article = await this.articlesRepository.findOne(articleId,{relations:['comments']})
+        const comment=new CommentEnity()
+        comment.article=article
+        comment.message=commentDto.message
+        return this.commentsRepository.save(commentDto)
     }
 }
