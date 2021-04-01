@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ArticleDto } from './dtos/article.dto';
@@ -27,7 +27,7 @@ export class BlogService {
 
 
     async updateArticle(articleId:number,articleDto:ArticleDto){
-        const article=this.articlesRepository.findOne(articleId)
+        const article=await this.articlesRepository.findOne(articleId)
         if(!article) return null
           await this.articlesRepository.update(articleId,articleDto)
          return await this.articlesRepository.findOne(articleId)

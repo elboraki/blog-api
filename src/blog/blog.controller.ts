@@ -36,8 +36,8 @@ export class BlogController {
     }
 
     @Put(':articleId')
-    async update(@Param(":articleId") articleId, @Body() articleDto:ArticleDto) {
-        Logger.log("update an article", "BlogController--->"+articleDto.title);
+    async update(@Param("articleId") articleId, @Body() articleDto:ArticleDto) {
+        Logger.log("update an article", "BlogController--->"+articleId);
         
        const article=await this.blogService.updateArticle(articleId,articleDto);
         if(article) return article;
