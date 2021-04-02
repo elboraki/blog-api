@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ArticleDto } from './dtos/article.dto';
+import { CommentDto } from './dtos/comment.dto';
 import { ArticleEntity } from './entities/article.entity';
 import { CommentEnity } from './entities/comment.entity';
 
@@ -43,11 +44,11 @@ export class BlogService {
 
     }
 
-    async addComment(articleId,commentDto){
+    async addComment(articleId,commentDto:CommentDto){
         const article = await this.articlesRepository.findOne(articleId,{relations:['comments']})
         const comment=new CommentEnity()
         comment.article=article
         comment.message=commentDto.message
-        return this.commentsRepository.save(commentDto)
+        return this.commentsRepository.save(comment)
     }
 }

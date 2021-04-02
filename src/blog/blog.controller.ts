@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Logger, Param, Post, Put } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { ArticleDto } from './dtos/article.dto';
+import { CommentDto } from './dtos/comment.dto';
 
 @Controller('blog')
 export class BlogController {
@@ -51,6 +52,16 @@ export class BlogController {
 
         const article=await this.blogService.removeArticle(articleId);
         if(article) return article;
+        throw new HttpException('Not found',HttpStatus.NOT_FOUND)
+    }
+
+    @Post("comment/:articleId")
+    async addComment(@Param("articleId") articleId,@Body() commentDto:CommentDto) {
+        //Logger.log("delete an article", "BlogController");
+        //const commentDto=new CommentDto();
+        
+        const comment=await this.blogService.addComment(articleId,commentDto);
+        if(comment) return comment;
         throw new HttpException('Not found',HttpStatus.NOT_FOUND)
     }
 }
