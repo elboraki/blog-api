@@ -62,4 +62,14 @@ export class BlogController {
         if (comment) return comment;
         throw new HttpException('Not found', HttpStatus.NOT_FOUND)
     }
+
+    @Post("comment/:articleId")
+    async addComment(@Param("articleId") articleId,@Body() commentDto:CommentDto) {
+        //Logger.log("delete an article", "BlogController");
+        //const commentDto=new CommentDto();
+        
+        const comment=await this.blogService.addComment(articleId,commentDto);
+        if(comment) return comment;
+        throw new HttpException('Not found',HttpStatus.NOT_FOUND)
+    }
 }
